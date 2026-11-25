@@ -1,0 +1,24 @@
+name: Probe sources
+
+on:
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Which sources answer from here
+        run: |
+          probe() {
+            echo "== $1"
+            curl -sS -L -m 25 -A "Mozilla/5.0 (rgm-metal-prices)" -o /tmp/out -w "status %{http_code}  bytes %{size_download}  seconds %{time_total}\n" "$1" || echo "FAILED"
+            head -c 300 /tmp/out 2>/dev/null | tr '\n' ' ' ; echo
+          }
+          probe "https://api.stlouisfed.org/fred/series/observations?series_id=PCOPPUSDM&file_type=json"
+          probe "https://fred.stlouisfed.org/data/PCOPPUSDM.txt"
+          probe "https://fred.stlouisfed.org/graph/fredgraph.csv?id=PCOPPUSDM"
+          probe "https://api.imf.org/external/sdmx/3.0/structure/dataflow/IMF.RES/PCPS"
+          probe "https://api.imf.org/external/sdmx/2.1/data/IMF.RES,PCPS/G001.PCOPP.USD.M?startPeriod=2025-01"
+          probe "https://www.imf.org/-/media/Files/Research/CommodityPrices/Monthly/external-data.ashx"
+          probe "https://api.db.nomics.world/v22/series/IMF/PCPS/M.W00.PCOPP.USD?observations=1"
+          probe "https://data.nasdaq.com/api/v3/datasets/ODA/PCOPP_USD.json?rows=3"
