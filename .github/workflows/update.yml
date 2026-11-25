@@ -17,6 +17,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Fetch prices
+        env:
+          METALCHARTS_KEY: ${{ secrets.METALCHARTS_KEY }}
         run: python update_prices.py
       - name: Save the figures
         if: always()
